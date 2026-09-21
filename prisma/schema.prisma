@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Locale { CS EN MT }
+enum ProductStatus { DRAFT ACTIVE ARCHIVED }
+
+model Product {
+  id          String          @id @default(cuid())
+  slug        String          @unique
+  status      ProductStatus   @default(DRAFT)
+  sku         String?         @unique
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  translations ProductTranslation[]
+  variants    ProductVariant[]
+  auditEvents AuditEvent[]
+}
+
+model ProductTranslation {
+  id          String   @id @default(cuid())
+  productId   String
+  locale      Locale
+  name        String
+  description String   @db.Text
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  @@unique([productId, locale])
+}
+
+model ProductVariant {
+  id          String   @id @default(cuid())
+  productId   String
+  sku         String   @unique
+  optionData  Json
+  priceMinor  Int
+  currency    String   @default("EUR")
+  stock       Int      @default(0)
+  active      Boolean  @default(true)
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model AuditEvent {
+  id        String   @id @default(cuid())
+  productId String?
+  actorId   String
+  action    String
+  payload   Json
+  createdAt DateTime @default(now())
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+}
