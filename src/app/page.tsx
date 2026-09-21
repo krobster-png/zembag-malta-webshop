@@ -8,6 +8,7 @@ type Locale = "en" | "cs" | "mt";
 type Product = (typeof source.products)[number];
 const catalog = source.products;
 const productMedia = (product: Product) => product.images.slice(16);
+const visibleCategories = new Set(["Na brambory", "Na česnek", "Na cibuli", "Na chleba", "Na ovoce a zeleninu", "Náplně"]);
 const copy = {
   en: { title: "Fresh potatoes.\nLess waste.", intro: "Natural, reusable storage bags designed to keep your potatoes and vegetables fresh for longer.", shop: "Browse catalog", story: "Our story", admin: "Admin", products: "Products", source: "Source catalog", note: "Imported reference data · Malta EUR pricing will be configured separately", all: "All products", add: "Add to cart", details: "Product details", cart: "Cart", language: "Language" },
   cs: { title: "Čerstvé brambory.\nMéně odpadu.", intro: "Přírodní opakovaně použitelné pytle, které pomáhají udržet brambory a zeleninu déle čerstvé.", shop: "Prohlédnout katalog", story: "Náš příběh", admin: "Admin", products: "Produkty", source: "Zdrojový katalog", note: "Importovaná referenční data · maltské EUR ceny budou nastaveny samostatně", all: "Všechny produkty", add: "Přidat do košíku", details: "Detail produktu", cart: "Košík", language: "Jazyk" },
@@ -22,11 +23,11 @@ export default function Home() {
   const [category, setCategory] = useState("all");
   const t = copy[locale];
   useEffect(() => { fetch("/api/catalog").then((response) => response.ok ? response.json() : Promise.reject()).then((data) => { if (data.products?.length) setCatalog(data.products); }).catch(() => undefined); }, []);
-  const categories = useMemo(() => [...new Set(catalog.map((p) => p.upgates_product?.category?.title ?? "Other"))].sort(), []);
+  const categories = useMemo(() => [...new Set(catalog.map((p) => p.upgates_product?.category?.title ?? "Other"))].filter((category) => visibleCategories.has(category)).sort(), []);
   const mediaBySource = useMemo(() => new Map(mediaManifest.media.map((media) => [media.source_url, media.local_path])), []);
   const filtered = useMemo(() => catalog.filter((p) => {
     const product = p.upgates_product; const cat = product?.category?.title ?? "Other";
-    return (category === "all" || cat === category) && `${product?.title ?? ""} ${product?.code ?? ""} ${cat}`.toLowerCase().includes(query.toLowerCase());
+    return visibleCategories.has(cat) && (category === "all" || cat === category) && `${product?.title ?? ""} ${product?.code ?? ""} ${cat}`.toLowerCase().includes(query.toLowerCase());
   }), [category, query]);
   return <main>
     <div className="announcement">Free delivery across Malta on orders over €50 · Source catalog imported</div>
