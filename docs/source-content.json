@@ -418,7 +418,9 @@
   ],
   "homepage": {
     "title": "Zembag BIOSTORE - pytle na skladování brambor",
-    "description": "Jak fungují pytle Zembag? Zembag je designový pytel z jutoviny na brambory a zeleninu vyráběných v různých velikostech od 0,75 kg česneku po 10 kg brambor. Pro větší skladovatele máme řešení v podobě návleku na přepravku, Zembox, na 20 kg brambor a zeleniny. Nejdůležitější součást Zembagu tvoří Náplně obsah ...",
-    "html_bytes": 211616
+    "description": "Jak fungují pytle Zembag? Zembag je designový pytel z jutoviny na brambory a zeleninu vyráběných v různých velikostech od 0,75 kg česneku po 10 kg brambor. Pro větší skladovatele máme řešení v podobě návleku na přepravku, Zembox, na 20 kg brambor a zeleniny. Nejdůležitější součást Zembagu tvoří Náplně obsahující přírodní silici. Ta se odpařuje do vnitřního prostoru Zembagu a tak vytváří ochrannou atmosféru kolem brambor a zeleniny čímž účinně zabraňuje jejich klíčení a plesnivění. Další důležitou úlohu plní pytel sám o sobě spolu s vnitřním vakem. Ten je nepropustný pro světlo a chrání brambory a zeleninu před zelenáním. Zároveň udržuje uvnitř dostatečnou vlhkost, takže brambory a zelenina nevysychají. Ve výsledku tak brambory a zelenina zůstanou déle čerstvé, v původní velikosti a se všemi důležitými nutričními hodnotami. Díky chytrému uskladnění brambor omezíte vyhazování a plýtvání jídlem. Díky chytrému skladování omezíte vyhazování a plýtvání jídlem.",
+    "html_bytes": 211616,
+    "image_url": "https://zembag.s3.cdn-upgates.com/_cache/6/9/697f876a845658d9682cbe1139aa63e8-agy-5076.jpg",
+    "local_image": "/media/d4f210547ccb522ba32fd47a.jpg"
   }
 }
