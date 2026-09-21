@@ -10,7 +10,7 @@ export function generateStaticParams() {
 }
 
 function findProduct(slug: string[]) {
-  const path = `/p/${slug.join("/")}`;
+  const path = `/${slug[0] === "p" ? slug.join("/") : `p/${slug.join("/")}`}`;
   return products.find((product) => product.path === path);
 }
 
