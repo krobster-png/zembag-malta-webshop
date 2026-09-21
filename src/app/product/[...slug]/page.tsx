@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { prisma } from "../../../lib/prisma";
 import source from "../../../../docs/source-products.json";
 import mediaManifest from "../../../../docs/media-manifest.json";
 
@@ -16,7 +17,10 @@ function findProduct(slug: string[]) {
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string[] }> }) {
-  const product = findProduct((await params).slug);
+  const sourceProduct = findProduct((await params).slug);
+  const canonicalPath = sourceProduct?.path;
+  const dbProduct: any = canonicalPath ? await prisma.product.findFirst({ where: { sourceUrl: `https://www.zembag.cz${canonicalPath}` }, include: { translations: { where: { locale: "CS" } }, categories: { include: { category: { include: { translations: { where: { locale: "CS" } } } } } }, media: { orderBy: { sortOrder: "asc" } }, prices: { where: { currency: "CZK" }, orderBy: { validFrom: "desc" }, take: 1 }, inventory: true } }) : null;
+  const product: any = sourceProduct ? (dbProduct ? { ...sourceProduct, source_url: dbProduct.sourceUrl || sourceProduct.source_url, availability: dbProduct.inventory?.source || sourceProduct.availability, images: dbProduct.media.map((media: { url: string }) => media.url), upgates_product: { ...sourceProduct.upgates_product, title: dbProduct.translations[0]?.name, code: dbProduct.sku, manufacturer: dbProduct.manufacturer, price: { ...sourceProduct.upgates_product?.price, withVat: dbProduct.prices[0] ? dbProduct.prices[0].amountMinor / 100 : sourceProduct.upgates_product?.price?.withVat, vatRate: dbProduct.taxRate ? Number(dbProduct.taxRate) : sourceProduct.upgates_product?.price?.vatRate }, category: { title: dbProduct.categories[0]?.category.translations[0]?.name || sourceProduct.upgates_product?.category?.title } } } : sourceProduct) : null;
   if (!product) return <main className="detail-page"><h1>Product not found</h1><Link href="/">Back to catalog</Link></main>;
   const data = product.upgates_product;
   const category = data?.category?.title ?? "Other";
