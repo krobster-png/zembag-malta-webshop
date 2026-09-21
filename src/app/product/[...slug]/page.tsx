@@ -4,6 +4,7 @@ import mediaManifest from "../../../../docs/media-manifest.json";
 
 type Product = (typeof source.products)[number];
 const products = source.products;
+const productMedia = (product: Product) => product.images.slice(16);
 
 export function generateStaticParams() {
   return products.map((product) => ({ slug: product.path.replace(/^\/p\//, "").split("/") }));
@@ -23,7 +24,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   return <main className="detail-page">
     <nav className="detail-nav"><Link className="logo" href="/"><span>zem</span>bag<span className="dot">.</span></Link><Link href="/">← Back to catalog</Link><Link href="/admin">Admin</Link></nav>
     <div className="detail-layout">
-      <section className="detail-media"><div className="detail-art"><div className="mini-bag"><span>zem</span><small>bag</small></div></div><p className="eyebrow">SOURCE MEDIA</p><div className="media-list">{product.images.slice(0, 8).map((image) => { const local = localMedia.get(image); return <a href={local ? `/${local.replace(/^public\//, "")}` : image} target="_blank" rel="noreferrer" key={image}><img src={local ? `/${local.replace(/^public\//, "")}` : image} alt={data?.title ?? "Zembag product"} /></a>; })}</div></section>
+      <section className="detail-media"><div className="detail-art"><div className="mini-bag"><span>zem</span><small>bag</small></div></div><p className="eyebrow">SOURCE MEDIA</p><div className="media-list">{productMedia(product).slice(0, 8).map((image) => { const local = localMedia.get(image); return <a href={local ? `/${local.replace(/^public\//, "")}` : image} target="_blank" rel="noreferrer" key={image}><img src={local ? `/${local.replace(/^public\//, "")}` : image} alt={data?.title ?? "Zembag product"} /></a>; })}</div></section>
       <section className="detail-copy"><p className="eyebrow">{category}</p><h1>{data?.title ?? product.path}</h1><p className="detail-code">{data?.code ?? "—"} · {data?.manufacturer ?? "—"}</p><div className="detail-price"><strong>EUR pending</strong><span>Malta price will be set separately in admin.</span></div><button className="button dark">Add to cart <span>+</span></button><div className="source-note"><h2>Product information</h2><dl><dt>Source price incl. VAT</dt><dd>{data?.price?.withVat ?? "—"} CZK</dd><dt>Source price excl. VAT</dt><dd>{data?.price?.withoutVat ?? "—"} CZK</dd><dt>VAT rate</dt><dd>{data?.price?.vatRate ?? "—"}%</dd><dt>Availability</dt><dd>{product.availability}</dd><dt>Source page</dt><dd><a href={product.source_url} target="_blank" rel="noreferrer">Open zembag.cz ↗</a></dd></dl></div><p className="licence-note">Imported reference data. Product content and media are retained as source material for the authorized Malta distribution webshop.</p></section>
     </div>
   </main>;
