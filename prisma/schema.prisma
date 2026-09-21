@@ -141,3 +141,27 @@ model AuditEvent {
   product   Product?    @relation(fields: [productId], references: [id], onDelete: SetNull)
   @@index([productId, createdAt])
 }
+
+model PricingPolicy {
+  id            String   @id @default(cuid())
+  currency      String   @default("EUR")
+  markupPercent Decimal  @db.Decimal(8, 3)
+  vatPercent    Decimal  @db.Decimal(5, 2)
+  roundingRule  String   @default("none")
+  active        Boolean  @default(false)
+  effectiveFrom DateTime @default(now())
+  effectiveTo   DateTime?
+  changedBy     String
+  note          String?  @db.Text
+  createdAt     DateTime @default(now())
+  @@index([active, effectiveFrom])
+}
+
+model AdminUser {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  displayName String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
