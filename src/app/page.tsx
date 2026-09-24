@@ -25,6 +25,8 @@ export default function Home() {
   const [category, setCategory] = useState("all");
   const t = copy[locale];
   useEffect(() => { const requestedCategory = new URLSearchParams(window.location.search).get("category"); if (requestedCategory && visibleCategories.includes(requestedCategory as typeof visibleCategories[number])) setCategory(requestedCategory); }, []);
+  useEffect(() => { fetch("/api/catalog", { cache: "no-store" }).then((response) => response.ok ? response.json() : Promise.reject(new Error("catalog request failed"))).then((data) => { if (data.products?.length) setCatalog(data.products); }).catch((error) => console.error("Catalog load failed", error));
+  }, []);
   useEffect(() => { try { const saved = window.localStorage.getItem("zembag-cart"); if (saved) setCart(JSON.parse(saved)); } catch {} }, []);
   useEffect(() => { window.localStorage.setItem("zembag-cart", JSON.stringify(cart)); }, [cart]);
   const addToCart = (item: Product) => { const p = item.upgates_product; const price = Number((p?.price as { malta?: number } | undefined)?.malta || 0); setCart((items) => { const existing = items.find((x) => x.id === item.path); return existing ? items.map((x) => x.id === item.path ? { ...x, quantity: x.quantity + 1 } : x) : [...items, { id: item.path, title: p?.title ?? item.path, price, quantity: 1 }]; }); setCartOpen(true); };
